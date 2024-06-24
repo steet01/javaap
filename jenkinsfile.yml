@@ -1,0 +1,28 @@
+pipeline:
+  agent:
+    any
+  environment:
+    GITHUB_USERNAME: 'Trohsamuel'
+    GITHUB_TOKEN: credentials('github-token') # Configurez ce secret dans Jenkins
+  stages:
+    - stage: Checkout
+      steps:
+        - script:
+            git branch: 'master',
+                url: 'https://github.com/Trohsamuel/java.git'
+    - stage: Build
+      steps: 
+        - sh 'mvn clean install'
+    - stage: Deploy
+      steps:
+        - sh '''
+          echo "Déploiement de l'application"
+          # Ajoutez ici vos étapes de déploiement spécifiques
+          '''
+  post:
+    always:
+      - junit 'target/surefire-reports/*.xml'
+    success:
+      - echo 'Le pipeline a réussi!'
+    failure:
+      - echo 'Le pipeline a échoué.'
